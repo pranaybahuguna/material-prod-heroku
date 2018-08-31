@@ -1,0 +1,36 @@
+.table-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 690px;
+    min-width: 300px;
+    position: relative
+  }
+  .loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mat-table {
+    overflow: auto;
+    max-height: 690px;
+  }
+  .menu-bar{
+      position: absolute;
+      right: 60px;
+      color: aliceblue;
+      background-color: #3f51b5
+  }
+.mat-header-row {
+    top: 0;
+    position: relative;
+    z-index: 1;
+    background-color: inherit;
+}

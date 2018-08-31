@@ -1,0 +1,72 @@
+"use strict";
+
+var _express = require("express");
+
+var _express2 = _interopRequireDefault(_express);
+
+var _mongoose = require("mongoose");
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _httpStatusCodes = require("http-status-codes");
+
+var _httpStatusCodes2 = _interopRequireDefault(_httpStatusCodes);
+
+var _api = require("./api");
+
+var _development = require("./config/env/development");
+
+var _globalMiddleware = require("./api/middlewares/global-middleware");
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+_mongoose2.default.Promise = global.Promise;
+//import swaggerUi from "swagger-ui-express";
+//import swaggerDocument from "./config/swagger.json";
+//import passport from "passport";
+
+//import logger from "morgan";
+//import cors from "cors";
+
+_mongoose2.default.connect(
+  process.env.MONGODB_URI || "mongodb://localhost:27017/test"
+);
+
+var app = (0, _express2.default)();
+var PORT = _development.devConfig.port;
+//process.env.PORT = 5000;
+
+(0, _globalMiddleware.setGlobalMiddleware)(app);
+
+app.use("/api", _api.restRouter);
+app.use(function(req, res, next) {
+  var error = new Error("Invalid Route");
+  error.status = _httpStatusCodes2.default.NOT_FOUND;
+  next(error);
+});
+
+app.use(function(error, req, res, next) {
+  res.status(error.status || _httpStatusCodes2.default.INTERNAL_SERVER_ERROR);
+  return res.json({
+    error: {
+      message: error.message
+    }
+  });
+});
+
+app.get("/", function(req, res) {
+  res.json({
+    msg: "Welcome to invoice builder backend"
+  });
+});
+
+app.get("/invoices", function(req, res) {
+  res.json(invoices);
+});
+
+app.listen(process.env.PORT || PORT, function() {
+  console.log("Server is running at PORT " + process.env.PORT);
+});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9hcHAuanMiXSwibmFtZXMiOlsibW9uZ29vc2UiLCJQcm9taXNlIiwiZ2xvYmFsIiwiY29ubmVjdCIsInByb2Nlc3MiLCJlbnYiLCJQT1JUIiwiZGV2Q29uZmlnIiwiZGF0YWJhc2UiLCJhcHAiLCJwb3J0IiwidXNlIiwicmVzdFJvdXRlciIsInJlcSIsInJlcyIsIm5leHQiLCJlcnJvciIsIkVycm9yIiwic3RhdHVzIiwiSHR0cFN0YXR1cyIsIk5PVF9GT1VORCIsIklOVEVSTkFMX1NFUlZFUl9FUlJPUiIsImpzb24iLCJtZXNzYWdlIiwiZ2V0IiwibXNnIiwiaW52b2ljZXMiLCJsaXN0ZW4iLCJjb25zb2xlIiwibG9nIl0sIm1hcHBpbmdzIjoiOztBQUFBOzs7O0FBQ0E7Ozs7QUFDQTs7OztBQUdBOztBQUNBOztBQUlBOzs7O0FBRUFBLG1CQUFTQyxPQUFULEdBQW1CQyxPQUFPRCxPQUExQjtBQUxBO0FBQ0E7QUFDQTs7QUFOQTtBQUNBOztBQVNBRCxtQkFBU0csT0FBVCxDQUNFQyxRQUFRQyxHQUFSLENBQVlDLElBQVosbUNBQWlEQyx1QkFBVUMsUUFEN0Q7O0FBSUEsSUFBTUMsTUFBTSx3QkFBWjtBQUNBLElBQU1ILE9BQU9DLHVCQUFVRyxJQUF2Qjs7QUFFQSwyQ0FBb0JELEdBQXBCOztBQUVBQSxJQUFJRSxHQUFKLENBQVEsTUFBUixFQUFnQkMsZUFBaEI7QUFDQUgsSUFBSUUsR0FBSixDQUFRLFVBQUNFLEdBQUQsRUFBTUMsR0FBTixFQUFXQyxJQUFYLEVBQW9CO0FBQzFCLE1BQU1DLFFBQVEsSUFBSUMsS0FBSixDQUFVLGVBQVYsQ0FBZDtBQUNBRCxRQUFNRSxNQUFOLEdBQWVDLDBCQUFXQyxTQUExQjtBQUNBTCxPQUFLQyxLQUFMO0FBQ0QsQ0FKRDs7QUFNQVAsSUFBSUUsR0FBSixDQUFRLFVBQUNLLEtBQUQsRUFBUUgsR0FBUixFQUFhQyxHQUFiLEVBQWtCQyxJQUFsQixFQUEyQjtBQUNqQ0QsTUFBSUksTUFBSixDQUFXRixNQUFNRSxNQUFOLElBQWdCQywwQkFBV0UscUJBQXRDO0FBQ0EsU0FBT1AsSUFBSVEsSUFBSixDQUFTO0FBQ2ROLFdBQU87QUFDTE8sZUFBU1AsTUFBTU87QUFEVjtBQURPLEdBQVQsQ0FBUDtBQUtELENBUEQ7O0FBU0FkLElBQUllLEdBQUosQ0FBUSxHQUFSLEVBQWEsVUFBQ1gsR0FBRCxFQUFNQyxHQUFOLEVBQWM7QUFDekJBLE1BQUlRLElBQUosQ0FBUztBQUNQRyxTQUFLO0FBREUsR0FBVDtBQUdELENBSkQ7O0FBTUFoQixJQUFJZSxHQUFKLENBQVEsV0FBUixFQUFxQixVQUFDWCxHQUFELEVBQU1DLEdBQU4sRUFBYztBQUNqQ0EsTUFBSVEsSUFBSixDQUFTSSxRQUFUO0FBQ0QsQ0FGRDs7QUFJQWpCLElBQUlrQixNQUFKLENBQVd2QixRQUFRQyxHQUFSLENBQVlDLElBQVosSUFBb0JBLElBQS9CLEVBQXFDLFlBQU07QUFDekNzQixVQUFRQyxHQUFSLGdDQUF5Q3RCLHVCQUFVRyxJQUFuRDtBQUNELENBRkQiLCJmaWxlIjoiYXBwLmpzIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IGV4cHJlc3MgZnJvbSBcImV4cHJlc3NcIjtcclxuaW1wb3J0IG1vbmdvb3NlIGZyb20gXCJtb25nb29zZVwiO1xyXG5pbXBvcnQgSHR0cFN0YXR1cyBmcm9tIFwiaHR0cC1zdGF0dXMtY29kZXNcIjtcclxuLy9pbXBvcnQgbG9nZ2VyIGZyb20gXCJtb3JnYW5cIjtcclxuLy9pbXBvcnQgY29ycyBmcm9tIFwiY29yc1wiO1xyXG5pbXBvcnQgeyByZXN0Um91dGVyIH0gZnJvbSBcIi4vYXBpXCI7XHJcbmltcG9ydCB7IGRldkNvbmZpZyB9IGZyb20gXCIuL2NvbmZpZy9lbnYvZGV2ZWxvcG1lbnRcIjtcclxuLy9pbXBvcnQgc3dhZ2dlclVpIGZyb20gXCJzd2FnZ2VyLXVpLWV4cHJlc3NcIjtcclxuLy9pbXBvcnQgc3dhZ2dlckRvY3VtZW50IGZyb20gXCIuL2NvbmZpZy9zd2FnZ2VyLmpzb25cIjtcclxuLy9pbXBvcnQgcGFzc3BvcnQgZnJvbSBcInBhc3Nwb3J0XCI7XHJcbmltcG9ydCB7IHNldEdsb2JhbE1pZGRsZXdhcmUgfSBmcm9tIFwiLi9hcGkvbWlkZGxld2FyZXMvZ2xvYmFsLW1pZGRsZXdhcmVcIjtcclxuXHJcbm1vbmdvb3NlLlByb21pc2UgPSBnbG9iYWwuUHJvbWlzZTtcclxubW9uZ29vc2UuY29ubmVjdChcclxuICBwcm9jZXNzLmVudi5QT1JUIHx8IGBtb25nb2RiOi8vbG9jYWxob3N0OjI3MDE3LyR7ZGV2Q29uZmlnLmRhdGFiYXNlfWBcclxuKTtcclxuXHJcbmNvbnN0IGFwcCA9IGV4cHJlc3MoKTtcclxuY29uc3QgUE9SVCA9IGRldkNvbmZpZy5wb3J0O1xyXG5cclxuc2V0R2xvYmFsTWlkZGxld2FyZShhcHApO1xyXG5cclxuYXBwLnVzZShcIi9hcGlcIiwgcmVzdFJvdXRlcik7XHJcbmFwcC51c2UoKHJlcSwgcmVzLCBuZXh0KSA9PiB7XHJcbiAgY29uc3QgZXJyb3IgPSBuZXcgRXJyb3IoXCJJbnZhbGlkIFJvdXRlXCIpO1xyXG4gIGVycm9yLnN0YXR1cyA9IEh0dHBTdGF0dXMuTk9UX0ZPVU5EO1xyXG4gIG5leHQoZXJyb3IpO1xyXG59KTtcclxuXHJcbmFwcC51c2UoKGVycm9yLCByZXEsIHJlcywgbmV4dCkgPT4ge1xyXG4gIHJlcy5zdGF0dXMoZXJyb3Iuc3RhdHVzIHx8IEh0dHBTdGF0dXMuSU5URVJOQUxfU0VSVkVSX0VSUk9SKTtcclxuICByZXR1cm4gcmVzLmpzb24oe1xyXG4gICAgZXJyb3I6IHtcclxuICAgICAgbWVzc2FnZTogZXJyb3IubWVzc2FnZVxyXG4gICAgfVxyXG4gIH0pO1xyXG59KTtcclxuXHJcbmFwcC5nZXQoXCIvXCIsIChyZXEsIHJlcykgPT4ge1xyXG4gIHJlcy5qc29uKHtcclxuICAgIG1zZzogXCJXZWxjb21lIHRvIGludm9pY2UgYnVpbGRlciBiYWNrZW5kXCJcclxuICB9KTtcclxufSk7XHJcblxyXG5hcHAuZ2V0KFwiL2ludm9pY2VzXCIsIChyZXEsIHJlcykgPT4ge1xyXG4gIHJlcy5qc29uKGludm9pY2VzKTtcclxufSk7XHJcblxyXG5hcHAubGlzdGVuKHByb2Nlc3MuZW52LlBPUlQgfHwgUE9SVCwgKCkgPT4ge1xyXG4gIGNvbnNvbGUubG9nKGBTZXJ2ZXIgaXMgcnVubmluZyBhdCBQT1JUICR7ZGV2Q29uZmlnLnBvcnR9YCk7XHJcbn0pO1xyXG4iXX0=

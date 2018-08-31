@@ -1,0 +1,52 @@
+<div class="limiter">
+  <div class="container-login">
+    <mat-card>
+        <div clas="mat-elevation-z8">
+            <div class="loading-shade" *ngIf="resultsLoading">
+              <mat-spinner *ngIf="resultsLoading"></mat-spinner>
+            </div>
+          </div>
+      <mat-card-title color="primary">{{title}}</mat-card-title>
+      <mat-card-content>
+          <form class="form-container" [formGroup]="authForm" novalidate (ngSubmit)="onSubmit()">
+            <mat-form-field color="accent" *ngIf="title === 'Signup'" >
+              <input matInput
+               placeholder="Name"
+               formControlName="name"
+                type="text">
+            </mat-form-field>  
+            <mat-form-field color="primary">
+                <input matInput placeholder="Email" formControlName="email">
+                <mat-error *ngIf="authForm.controls.email.invalid && authForm.controls.email.touched"> email is required </mat-error>
+              </mat-form-field>
+              <mat-form-field color="primary">
+                  <input matInput placeholder="Password" formControlName="password" type="password">
+                  <mat-error *ngIf="authForm.controls.password.invalid && authForm.controls.password.touched"> password is required </mat-error>
+                </mat-form-field>
+              <div>
+                <button mat-raised-button  type="submit" color="primary" class="btn-block">{{title}}</button>
+                <!--<button mat-raised-button class="loginBtn loginBtn--google" (click)="googleAuthHandler()">Google</button>-->
+                <div class="alternative" *ngIf="title==='Login'">
+                <a class="btn btn-social btn-block forgot-password" mat-button (click) ="forgotPassHandler()">
+                        Forgot password</a>
+                <a href="/api/auth/google"  class="btn btn-social btn-block btn-google" mat-button >
+                  <i class="fa fa-google" style="margin-bottom: 2px;"></i>
+                   Login with Google</a>
+                <a href="/api/auth/github" mat-button class="btn btn-social btn-block btn-github">
+                  <i class="fa fa-github" style="margin-bottom: 2px;"></i>
+                   Login with Github</a>
+                </div>
+              </div>
+      </form>
+      </mat-card-content>
+      <div class="alternative" *ngIf="title==='Login'">
+        <p>Don't have an account?</p>
+        <button class="btn-block" mat-raised-button type="submit" color="primary" [routerLink]="['/signup']">Signup</button>
+      </div>
+      <div class="alternative" *ngIf="title==='Signup'">
+          <p>Have an account?</p>
+          <button class="btn-block" mat-raised-button type="submit" color="primary" [routerLink]="['/login']">Login</button>
+        </div>
+    </mat-card>
+  </div>
+  </div>
